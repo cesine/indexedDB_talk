@@ -95,20 +95,6 @@ doc = {
   collaborators: [123, 456]
 };
 
-// Indexable
-var doc2 = {
-  _id: "efg-456",
-  _rev: "1-734-hjk",
-  dateUpdated: Date.now(),
-  title: "Thailand Hiking Promotion Mock-up: Dry",
-  media: {
-    id: "375204436",
-    description: "Chiang Mai, Thailand - February 3, 2016: Tourist go up the stair to see the view of canyon hill in Mae Wang national park for travelling attraction in Chiang Mai, Thailand on February 3, 2016",
-    type: "image"
-  },
-  collaborators: [123, 456]
-};
-
 /**
  * Create a document
  */
@@ -171,6 +157,24 @@ var request = transaction.objectStore("workspaces")
 request.onerror = genericError;
 request.onsuccess = genericSuccess;
 
+/** 
+ * Add some more data 
+ */
+
+var doc2 = {
+  _id: "efg-456",
+  _rev: "1-734-hjk",
+  dateUpdated: Date.now(),
+  title: "Thailand Hiking Promotion Mock-up: Dry",
+  media: {
+    id: "375204436",
+    description: "Chiang Mai, Thailand - February 3, 2016: Tourist go up the stair to see the view of canyon hill in Mae Wang national park for travelling attraction in Chiang Mai, Thailand on February 3, 2016",
+    type: "image"
+  },
+  collaborators: [123, 456]
+};
+
+
 /**
  * Query workspaces edited between two dates, sorted by most recent
  */
@@ -183,8 +187,8 @@ transaction.oncomplete = genericComplete;
 var index = transaction.objectStore("workspaces")
   .index("dateUpdated");
 
-index.count().onsuccess = function() {
-  console.log("Items found: " + countRequest.result);
+index.count().onsuccess = function(event) {
+  console.log("Items found: " + event.target.result);
 };
 
 index.openCursor(boundKeyRange, "prev").onsuccess = function(event) {
@@ -221,9 +225,9 @@ index.openCursor(boundKeyRange).onsuccess = function(event) {
 var transaction = db.transaction(["workspaces"]);
 transaction.onerror = genericError;
 transaction.oncomplete = genericComplete;
+
 var index = transaction.objectStore("workspaces")
   .index("title");
-
 // Using a normal cursor to grab whole customer record objects
 index.openKeyCursor().onsuccess = function(event) {
   var cursor = event.target.result;
@@ -234,3 +238,9 @@ index.openKeyCursor().onsuccess = function(event) {
     cursor.continue();
   }
 };
+
+
+/*
+ * Delete a database 
+ */
+indexedDB.deleteDatabase(currentTeamId)
